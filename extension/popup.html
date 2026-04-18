@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WA Chat Summariser</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>WA Chat Summariser</h1>
+      </header>
+
+      <main>
+        <p>Enter a chat snippet below and click <strong>Summarise</strong>.</p>
+        <textarea id="chatInput" placeholder="Paste WhatsApp chat text here..."></textarea>
+        <button id="summariseBtn">Summarise</button>
+        <div id="result" class="result"></div>
+      </main>
+
+      <footer>
+        <small id="version"></small>
+      </footer>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
