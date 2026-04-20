@@ -15,25 +15,7 @@
     "service_worker": "background.js"
   },
   "permissions": [
-    "storage",
-    "scripting",
-    "activeTab",
-    "tabs"
-  ],
-  "host_permissions": [
-    "https://web.whatsapp.com/*",
-    "http://172.13.12.240:8000/*"
-  ],
-  "content_scripts": [
-    {
-      "matches": [
-        "https://web.whatsapp.com/*"
-      ],
-      "js": [
-        "content.js"
-      ],
-      "run_at": "document_idle"
-    }
+    "storage"
   ],
   "icons": {
     "16": "icons/icon16.svg",

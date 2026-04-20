@@ -1,47 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WA Chat Summariser</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>WA Chat Summariser</h1>
+      </header>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WA Chat Summarizer</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
+      <main>
+        <p>Enter a chat snippet below and click <strong>Summarise</strong>.</p>
+        <textarea id="chatInput" placeholder="Paste WhatsApp chat text here..."></textarea>
+        <button id="summariseBtn">Summarise</button>
+        <div id="result" class="result"></div>
+      </main>
 
-<body>
-  <div class="container">
-    <header>
-      <div class="brand">
-        <div class="brand-icon">💬</div>
-        <div>
-          <h1>WhatsApp Summarizer</h1>
-          <p>Convert chat transcripts into clear summaries and entity cards.</p>
-        </div>
-      </div>
-    </header>
+      <footer>
+        <small id="version"></small>
+      </footer>
+    </div>
 
-    <main>
-      <label for="chatInput">WhatsApp chat text</label>
-      <textarea id="chatInput" placeholder="Paste WhatsApp chat text here..."></textarea>
-
-      <div class="actions">
-        <button id="fetchWhatsAppBtn" class="secondary" title="Extract from open WhatsApp Web chat">📲 Extract from
-          Chat</button>
-        <button id="summariseBtn" class="primary">Summarize</button>
-        <button id="extractBtn" class="secondary">Extract Entities</button>
-      </div>
-
-      <div id="status" class="status">Ready to process chat content.</div>
-      <div id="loader" class="loader" aria-hidden="true"></div>
-      <div id="cards" class="cards"></div>
-    </main>
-
-    <footer>
-      <small id="version"></small>
-    </footer>
-  </div>
-
-  <script src="popup.js"></script>
-</body>
-
+    <script src="popup.js"></script>
+  </body>
 </html>
