@@ -105,13 +105,8 @@ Requirements:
                     important_topics = []
             except json.JSONDecodeError as e:
                 logger.warning(f"Failed to parse LLM response as JSON: {generated_text}")
-                # Fallback: treat the entire response as summary
-#                 {
-# "summary": "The conversation revolves around troubleshooting a repository access issue and coordinating to fix it. Participants discuss token authentication problems and decide to resolve the setup in person at college the next day. They also coordinate bringing laptops/PCs and timing their meeting to complete the work and presentation.",
-# "important_topics": ["Repository access and token issue", "Invitation to repository and push access", "Plan to fix setup at college", "Bringing laptop/PC for setup", "Coordinating meeting time and location", "Presentation preparation"]
-# }
-                summary = "The conversation revolves around troubleshooting a repository access issue and coordinating to fix it. Participants discuss token authentication problems and decide to resolve the setup in person at college the next day. They also coordinate bringing laptops/PCs and timing their meeting to complete the work and presentation."
-                important_topics =  ["Repository access and token issue", "Invitation to repository and push access", "Plan to fix setup at college", "Bringing laptop/PC for setup", "Coordinating meeting time and location", "Presentation preparation"]
+                summary = generated_text
+                important_topics =  []
 
     except httpx.RequestError as e:
         logger.error(f"Request to Ollama failed: {e}")
