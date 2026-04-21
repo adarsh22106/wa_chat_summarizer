@@ -1,25 +1,26 @@
 {
   "manifest_version": 3,
-  "name": "WA Chat Summariser Starter",
-  "description": "Basic Chrome extension starter template with popup and background service worker.",
-  "version": "1.0.0",
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": {
-      "16": "icons/icon16.svg",
-      "48": "icons/icon48.svg",
-      "128": "icons/icon128.svg"
-    }
-  },
+  "name": "WhatsApp Chat Summarizer",
+  "version": "1.0",
+  "description": "Summarize WhatsApp chats with AI",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://web.whatsapp.com/*"
+  ],
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": [
-    "storage"
+  "content_scripts": [
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": ["content.js"]
+    }
   ],
-  "icons": {
-    "16": "icons/icon16.svg",
-    "48": "icons/icon48.svg",
-    "128": "icons/icon128.svg"
+  "action": {
+    "default_title": "WhatsApp Chat Summarizer"
   }
 }

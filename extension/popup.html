@@ -1,29 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WA Chat Summariser</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="container">
-      <header>
-        <h1>WA Chat Summariser</h1>
-      </header>
-
-      <main>
-        <p>Enter a chat snippet below and click <strong>Summarise</strong>.</p>
-        <textarea id="chatInput" placeholder="Paste WhatsApp chat text here..."></textarea>
-        <button id="summariseBtn">Summarise</button>
-        <div id="result" class="result"></div>
-      </main>
-
-      <footer>
-        <small id="version"></small>
-      </footer>
-    </div>
-
-    <script src="popup.js"></script>
-  </body>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>WhatsApp Chat Summarizer</title>
+  <style>
+    body { width: 200px; padding: 10px; font-family: Arial, sans-serif; }
+    button { width: 100%; padding: 8px; background: #25d366; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #128c7e; }
+  </style>
+</head>
+<body>
+  <h3>WhatsApp Chat Summarizer</h3>
+  <p>Click the extension icon when on WhatsApp Web to use the summarizer panel.</p>
+  <button onclick="chrome.tabs.create({url: 'https://web.whatsapp.com'})">Open WhatsApp Web</button>
+</body>
 </html>
