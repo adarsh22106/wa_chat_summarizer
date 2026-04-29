@@ -34,7 +34,8 @@ class SummaryResponse(BaseModel):
     important_topics: List[str]
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL = "smollm:latest"
+# MODEL = "smollm:latest"
+MODEL = "gemma4:e4b"
 
 @app.post("/summarize", response_model=SummaryResponse)
 async def summarize_chat(request: SummaryRequest):
