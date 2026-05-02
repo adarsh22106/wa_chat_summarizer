@@ -9,6 +9,114 @@ A productivity focused Chrome extension that enhances WhatsApp Web by delivering
 - **Time-based Summary** - Summarize messages within a specific time range
 - **Privacy-First** - All processing happens locally via Ollama (no cloud API)
 
+## System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                         USER BROWSER (Chrome)                        │
+│  ┌────────────────────────────────────────────────────────────────┐ │
+│  │                     WhatsApp Web (web.whatsapp.com)            │ │
+│  │  ┌──────────────────────────────────────────────────────────┐ │ │
+│  │  │  Chat Window (DOM)                                       │ │ │
+│  │  │  - Messages with sender, text, timestamp                │ │ │
+│  │  │  - Message Container Class: x9f619 x1hx0egp ...         │ │ │
+│  │  └──────────────────────────────────────────────────────────┘ │ │
+│  │                           ↓                                    │ │
+│  │  ┌──────────────────────────────────────────────────────────┐ │ │
+│  │  │  Chrome Extension (Manifest v3)                         │ │ │
+│  │  │  ┌────────────────────────────────────────────────────┐ │ │ │
+│  │  │  │ Content Script (content.js)                        │ │ │ │
+│  │  │  │ - DOM scraper for WhatsApp messages               │ │ │ │
+│  │  │  │ - Extracts: sender, message, timestamp            │ │ │ │
+│  │  │  │ - Handles lazy loading & auto-scroll              │ │ │ │
+│  │  │  └────────────────────────────────────────────────────┘ │ │ │
+│  │  │           ↓                                              │ │ │
+│  │  │  ┌────────────────────────────────────────────────────┐ │ │ │
+│  │  │  │ Background Service Worker (background.js)          │ │ │ │
+│  │  │  │ - Message router                                   │ │ │ │
+│  │  │  │ - Handles communication with server                │ │ │ │
+│  │  │  └────────────────────────────────────────────────────┘ │ │ │
+│  │  │           ↓                                              │ │ │
+│  │  │  ┌────────────────────────────────────────────────────┐ │ │ │
+│  │  │  │ UI Panel (panel.js + panel.css)                    │ │ │ │
+│  │  │  │ - Right-side injected panel (Shadow DOM)           │ │ │ │
+│  │  │  │ - Summarize Chat button                            │ │ │ │
+│  │  │  │ - Last X Messages + Time Range options             │ │ │ │
+│  │  │  │ - Displays summary & key topics                    │ │ │ │
+│  │  │  └────────────────────────────────────────────────────┘ │ │ │
+│  │  └──────────────────────────────────────────────────────────┘ │ │
+│  └────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────┘
+              ↓ (HTTP API Request - JSON)
+┌─────────────────────────────────────────────────────────────────────┐
+│                    Backend Server (localhost:8000)                   │
+│                                                                      │
+│  FastAPI Application (main.py)                                      │
+│  ┌────────────────────────────────────────────────────────────────┐ │
+│  │ POST /summarize                                                │ │
+│  │ - Accepts: { messages: [{text, sender, timestamp}] }          │ │
+│  │ - Returns: { summary: str, important_topics: [str] }          │ │
+│  │                                                                │ │
+│  │ CORS Middleware: Allow requests from Chrome extension         │ │
+│  └────────────────────────────────────────────────────────────────┘ │
+│              ↓ (Format chat + send to Ollama)                       │
+│  ┌────────────────────────────────────────────────────────────────┐ │
+│  │ Ollama Integration (localhost:11434/api/generate)              │ │
+│  │ - Model: gemma4:e4b (or smollm:latest)                         │ │
+│  │ - Processes chat text locally                                  │ │
+│  │ - Generates summary & extracts key topics                      │ │
+│  └────────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────┘
+              ↓ (Summary Response)
+        [Display in Extension Panel]
+```
+
+### Component Breakdown
+
+#### 1. **Chrome Extension** (Manifest v3)
+- **content.js**: Injects scripts into WhatsApp Web, extracts chat messages from DOM, handles dynamic message loading
+- **background.js**: Service worker that manages communication between content script and local server
+- **panel.js + panel.css**: UI panel injected on the right side of WhatsApp Web with summarization options
+- **popup.html**: Extension popup (if needed for settings)
+- **manifest.json**: Declares permissions, host permissions for WhatsApp Web, content scripts, and background worker
+
+#### 2. **FastAPI Backend Server** (main.py)
+- Receives POST requests from the extension with extracted messages
+- Formats chat messages into readable text
+- Calls Ollama API for LLM-based summarization
+- Returns structured response: `{ summary: string, important_topics: string[] }`
+- CORS enabled for cross-origin requests from the extension
+- Runs on `http://localhost:8000`
+
+#### 3. **Ollama (Local LLM)**
+- Runs on `http://localhost:11434`
+- Handles all AI processing **locally** (no cloud, complete privacy)
+- Current model: `gemma4:e4b` (or configurable to `smollm:latest`)
+- Processes chat context and generates summaries
+
+#### 4. **Model Training** (model/)
+- `text_summarizer_training.ipynb`: Jupyter notebook for fine-tuning or experimenting with LLM models
+- Can be used for custom model development
+
+### Data Flow
+
+1. **Extraction Phase**: User clicks "Summarize" → Extension's content script scrapes WhatsApp DOM for messages
+2. **Formatting Phase**: Messages are structured as: `[timestamp] sender: message_text`
+3. **Request Phase**: Extension sends `POST /summarize` with message array to backend
+4. **Processing Phase**: Backend sends formatted chat to Ollama for summarization
+5. **Response Phase**: Ollama generates summary and key topics, backend returns to extension
+6. **Display Phase**: Extension displays summary and topics in the right-side panel
+
+### Key Features
+
+- **Privacy-First**: All processing happens locally via Ollama (no cloud API)
+- **Real-time**: Extracts messages as they appear in the chat
+- **Flexible**: Three summarization modes (full chat, last X messages, time range)
+- **Shadow DOM**: UI panel isolated from WhatsApp styles to prevent conflicts
+- **Lazy Loading**: Handles WhatsApp's dynamic message loading by auto-scrolling
+
+---
+
 ## Project Structure
 
 ```
@@ -24,6 +132,8 @@ wa_chat_summariser/
 │   ├── main.py
 │   ├── requirements.txt
 │   └── README.md
+├── model/              # ML/LLM training
+│   └── text_summarizer_training.ipynb
 └── README.md
 ```
 
