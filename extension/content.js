@@ -364,6 +364,7 @@ function injectPanel() {
     } else if (event.data.action === 'summarize') {
       try {
         const result = await summarizeMessages(event.data.messages);
+        console.log(result);
         window.postMessage({
           type: 'summarize-response',
           messageId: event.data.messageId,
@@ -444,7 +445,7 @@ function attachPanelHandlers(shadow, shadowHost) {
   }
 
   function displayResult(result) {
-    const { summary, topics } = result;
+    const { summary, important_topics } = result;
     outputDiv.innerHTML = `
       <div class="result-card">
         <div class="result-title">Summary</div>
@@ -453,7 +454,7 @@ function attachPanelHandlers(shadow, shadowHost) {
       <div class="result-card">
         <div class="result-title">Key Topics</div>
         <ul>
-          ${Array.isArray(topics) ? topics.map(topic => `<li>${topic}</li>`).join('') : '<li>No topics found</li>'}
+          ${Array.isArray(important_topics) ? important_topics.map(topic => `<li>${topic}</li>`).join('') : '<li>No topics found</li>'}
         </ul>
       </div>
     `;

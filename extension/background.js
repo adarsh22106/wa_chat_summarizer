@@ -38,10 +38,13 @@ async function summarizeMessages(messages) {
   if (!response.ok) {
     throw new Error('API request failed: ' + response.statusText);
   }
-
+  
   const data = await response.json();
+  console.log(data);
+
+  alert('Summary: ' + data.summary + '\nImportant Topics: ' + data.important_topics.join(', '));
   return {
     summary: data.summary || 'No summary available.',
-    topics: data.topics || []
+    important_topics: data.important_topics
   };
 }

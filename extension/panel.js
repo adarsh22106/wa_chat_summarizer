@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayResult(result) {
-        const { summary, topics } = result;
+        const { summary, important_topics } = result;
         outputDiv.innerHTML = `
       <div class="summary">
         <h3>Summary</h3>
@@ -77,8 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="topics">
         <h3>Key Topics</h3>
         <ul>
-        ${topics}
-          ${topics.map(topic => `<li>${topic}</li>`).join('')}
+        ${important_topics}
+          ${important_topics.map(topic => `<li>${topic}</li>`).join('')}
         </ul>
       </div>
     `;
